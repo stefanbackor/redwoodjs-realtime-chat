@@ -1,38 +1,59 @@
+import { faker } from '@faker-js/faker'
 import type { Prisma } from '@prisma/client'
 import { db } from 'api/src/lib/db'
+import { sample } from 'lodash'
 
 export default async () => {
   try {
-    //
-    // Manually seed via `yarn rw prisma db seed`
-    // Seeds automatically with `yarn rw prisma migrate dev` and `yarn rw prisma migrate reset`
-    //
-    // Update "const data = []" to match your data model and seeding needs
-    //
-    const data: Prisma.UserExampleCreateArgs['data'][] = [
-      // To try this example data with the UserExample model in schema.prisma,
-      // uncomment the lines below and run 'yarn rw prisma migrate dev'
-      //
-      // { name: 'alice', email: 'alice@example.com' },
-      // { name: 'mark', email: 'mark@example.com' },
-      // { name: 'jackie', email: 'jackie@example.com' },
-      // { name: 'bob', email: 'bob@example.com' },
+    const users: Prisma.UserCreateManyInput[] = [
+      { name: 'alice', email: 'alice@example.com' },
+      { name: 'mark', email: 'mark@example.com' },
+      { name: 'jackie', email: 'jackie@example.com' },
+      { name: 'bob', email: 'bob@example.com' },
+      { name: 'mark', email: 'mark@example.com' },
     ]
+
+    const posts: Prisma.PostCreateManyInput[] = [
+      {
+        id: 1,
+        title: 'First Post',
+        content: 'This is my first post',
+        published: true,
+        authorId: 1,
+      },
+      {
+        id: 2,
+        title: 'Second Post',
+        content: 'This is my second post',
+        published: true,
+        authorId: 1,
+      },
+    ]
+
+    const rooms: Prisma.RoomCreateManyInput[] = [
+      { id: 1, name: faker.company.name() },
+      { id: 2, name: faker.company.name() },
+    ]
+
+    const messages: Prisma.MessageCreateManyInput[] = Array.from(Array(15)).map(
+      () => ({
+        roomId: sample([1, 2]),
+        content: faker.hacker.phrase(),
+        userId: sample([1, 2]),
+        createdAt: faker.date.past(),
+      })
+    )
+
     console.log(
       "\nUsing the default './scripts/seed.{js,ts}' template\nEdit the file to add seed data\n"
     )
 
-    // Note: if using PostgreSQL, using `createMany` to insert multiple records is much faster
-    // @see: https://www.prisma.io/docs/reference/api-reference/prisma-client-reference#createmany
-    await Promise.all(
-      //
-      // Change to match your data model and seeding needs
-      //
-      data.map(async (data: Prisma.UserExampleCreateArgs['data']) => {
-        const record = await db.userExample.create({ data })
-        console.log(record)
-      })
-    )
+    await Promise.all([
+      db.user.createMany({ data: users, skipDuplicates: true }),
+      db.post.createMany({ data: posts, skipDuplicates: true }),
+      db.room.createMany({ data: rooms, skipDuplicates: true }),
+      db.message.createMany({ data: messages }),
+    ])
 
     // If using dbAuth and seeding users, you'll need to add a `hashedPassword`
     // and associated `salt` to their record. Here's how to create them using
