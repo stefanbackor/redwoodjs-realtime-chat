@@ -7,14 +7,14 @@ export const standard = defineScenario<Prisma.MessageCreateArgs>({
       data: {
         content: 'String',
         room: { create: {} },
-        user: { create: { email: 'String4786070' } },
+        user: { create: { email: 'String8376296' } },
       },
     },
     two: {
       data: {
         content: 'String',
         room: { create: {} },
-        user: { create: { email: 'String9281479' } },
+        user: { create: { email: 'String4885685' } },
       },
     },
   },

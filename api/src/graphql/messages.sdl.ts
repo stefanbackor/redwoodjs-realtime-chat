@@ -10,6 +10,7 @@ export const schema = gql`
   }
 
   type Query {
+    messagesPaginated(roomId: Int!, cursor: Int!): [Message!] @requireAuth
     messages: [Message!]! @requireAuth
     message(id: Int!): Message @requireAuth
   }

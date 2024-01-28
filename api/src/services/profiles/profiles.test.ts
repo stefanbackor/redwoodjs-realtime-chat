@@ -30,10 +30,9 @@ describe('profiles', () => {
 
   scenario('creates a profile', async (scenario: StandardScenario) => {
     const result = await createProfile({
-      input: { bio: 'String', userId: scenario.profile.two.userId },
+      input: { userId: scenario.profile.two.userId },
     })
 
-    expect(result.bio).toEqual('String')
     expect(result.userId).toEqual(scenario.profile.two.userId)
   })
 
@@ -41,10 +40,10 @@ describe('profiles', () => {
     const original = (await profile({ id: scenario.profile.one.id })) as Profile
     const result = await updateProfile({
       id: original.id,
-      input: { bio: 'String2' },
+      input: { userId: scenario.profile.two.userId },
     })
 
-    expect(result.bio).toEqual('String2')
+    expect(result.userId).toEqual(scenario.profile.two.userId)
   })
 
   scenario('deletes a profile', async (scenario: StandardScenario) => {

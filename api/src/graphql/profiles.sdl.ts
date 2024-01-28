@@ -1,7 +1,8 @@
 export const schema = gql`
   type Profile {
     id: Int!
-    bio: String!
+    bio: String
+    avatar: String
     user: User!
     userId: Int!
   }
@@ -12,12 +13,14 @@ export const schema = gql`
   }
 
   input CreateProfileInput {
-    bio: String!
+    bio: String
+    avatar: String
     userId: Int!
   }
 
   input UpdateProfileInput {
     bio: String
+    avatar: String
     userId: Int
   }
 

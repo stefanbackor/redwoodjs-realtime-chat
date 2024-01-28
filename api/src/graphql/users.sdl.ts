@@ -4,7 +4,6 @@ export const schema = gql`
     email: String!
     name: String
     role: Role!
-    posts: [Post]!
     profile: Profile
   }
 

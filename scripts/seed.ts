@@ -6,28 +6,11 @@ import { sample } from 'lodash'
 export default async () => {
   try {
     const users: Prisma.UserCreateManyInput[] = [
-      { name: 'alice', email: 'alice@example.com' },
-      { name: 'mark', email: 'mark@example.com' },
-      { name: 'jackie', email: 'jackie@example.com' },
-      { name: 'bob', email: 'bob@example.com' },
-      { name: 'mark', email: 'mark@example.com' },
-    ]
-
-    const posts: Prisma.PostCreateManyInput[] = [
-      {
-        id: 1,
-        title: 'First Post',
-        content: 'This is my first post',
-        published: true,
-        authorId: 1,
-      },
-      {
-        id: 2,
-        title: 'Second Post',
-        content: 'This is my second post',
-        published: true,
-        authorId: 1,
-      },
+      { id: 1, name: 'alice', email: 'alice@example.com' },
+      { id: 2, name: 'mark', email: 'mark@example.com' },
+      { id: 3, name: 'jackie', email: 'jackie@example.com' },
+      { id: 4, name: 'bob', email: 'bob@example.com' },
+      { id: 5, name: 'mark', email: 'mark@example.com' },
     ]
 
     const rooms: Prisma.RoomCreateManyInput[] = [
@@ -50,10 +33,19 @@ export default async () => {
 
     await Promise.all([
       db.user.createMany({ data: users, skipDuplicates: true }),
-      db.post.createMany({ data: posts, skipDuplicates: true }),
       db.room.createMany({ data: rooms, skipDuplicates: true }),
       db.message.createMany({ data: messages }),
     ])
+
+    const dbUsers = await db.user.findMany()
+    await db.profile.createMany({
+      data: dbUsers.map((user) => ({
+        userId: user.id,
+        bio: faker.lorem.paragraph(),
+        avatar: faker.image.avatar(),
+      })),
+      skipDuplicates: true,
+    })
 
     // If using dbAuth and seeding users, you'll need to add a `hashedPassword`
     // and associated `salt` to their record. Here's how to create them using
